@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17152e"><title>Player 1 + Player 2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+:root{--bg:#17152e;--panel:#282449;--pink:#ff9fcb;--cream:#fff1d5;--mint:#9ce8c7;--gold:#ffd779;--pixel:'Press Start 2P',monospace;--type:'VT323',monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--cream);font:22px var(--type);min-height:100vh}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:3px dashed var(--gold);outline-offset:4px}
+#stars{position:fixed;inset:0;pointer-events:none;opacity:.65;background-image:radial-gradient(#fff 1px,transparent 1.5px),radial-gradient(#ffb6d8 1px,transparent 1.5px);background-size:83px 83px,127px 127px;background-position:0 0,30px 50px;animation:drift 35s linear infinite}
+@keyframes drift{to{background-position:83px 166px,157px 304px}}.scan{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.07;background:repeating-linear-gradient(0deg,transparent 0 3px,#000 4px 5px)}
+.hidden{display:none!important}.screen{position:relative;z-index:1;min-height:100svh;padding:22px 14px 40px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.panel{width:min(760px,100%);background:var(--panel);border:4px solid var(--cream);box-shadow:8px 8px 0 #080817;padding:clamp(18px,4vw,34px);position:relative}.panel:before{content:"";position:absolute;inset:7px;border:2px solid #625b91;pointer-events:none}
+.logo{font:clamp(17px,4vw,27px)/1.7 var(--pixel);color:var(--pink);text-align:center;text-shadow:3px 3px #8c4d8a;margin:0 0 12px}.sub{text-align:center;color:var(--mint);font:20px var(--type);letter-spacing:2px}
+.scene{height:175px;position:relative;overflow:hidden;margin:20px 0;background:linear-gradient(#26234d 0 62%,#34305d 62%);border:3px solid #7770a4}
+.moon{position:absolute;width:42px;height:42px;border-radius:50%;background:var(--gold);right:15%;top:24px;box-shadow:0 0 22px #ffd77988}.cloud{position:absolute;width:70px;height:15px;background:#8a83b8;top:45px;left:14%;box-shadow:14px -12px #8a83b8,32px 0 #8a83b8}
+.hill{position:absolute;bottom:0;width:120%;height:70px;left:-10%;background:#333d64;clip-path:polygon(0 50%,15% 10%,28% 45%,42% 0,58% 54%,72% 12%,88% 53%,100% 20%,100% 100%,0 100%)}.ground{position:absolute;bottom:0;height:33px;width:100%;background:#426b62;border-top:4px solid #79a77f}
+.sprite{position:absolute;bottom:24px;width:32px;height:48px;background:linear-gradient(#543a69 0 20%,#e9a3a8 20% 55%,#f0c3a0 55% 72%,#463c68 72%);box-shadow:8px -8px #f0c3a0,-5px 12px #30284e,8px 12px #30284e}.sprite.a{left:34%}.sprite.b{left:54%;filter:hue-rotate(75deg)}
+.heart{position:absolute;color:var(--pink);font-size:19px;animation:float 2s ease-in-out infinite}.heart.a{left:44%;top:50px}.heart.b{left:63%;top:83px;animation-delay:.7s}@keyframes float{50%{transform:translateY(-9px)}}
+.menu{display:grid;gap:10px;max-width:370px;margin:20px auto 0}.btn,.action{border:3px solid var(--cream);background:#51477d;color:var(--cream);padding:13px 10px;font:9px/1.8 var(--pixel);box-shadow:4px 4px #0c0b1c;transition:.12s}.btn:hover,.action:hover{background:#74578f;transform:translate(-2px,-2px);box-shadow:6px 6px #0c0b1c}.btn.primary{background:#a54f83;color:white}.tiny{text-align:center;color:#aaa4ca;font:8px/2 var(--pixel);margin:18px 0 0}
+.header{width:min(900px,100%);display:flex;justify-content:space-between;gap:12px;align-items:center;margin:0 auto 15px;font:8px var(--pixel);color:var(--mint)}.header button{background:transparent;border:2px solid #716a9b;padding:8px;font:7px var(--pixel)}
+.title{font:clamp(14px,3vw,21px)/1.8 var(--pixel);color:var(--pink);margin:0 0 15px}.dialog{background:#201d40;border:3px solid #8b83b6;padding:15px;margin-top:15px;line-height:1.35;min-height:80px}.speaker{color:var(--gold);font:8px var(--pixel);display:block;margin-bottom:10px}.dialog p{margin:0}
+.stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:8px var(--pixel);color:var(--gold);margin:12px 0}.map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:17px}
+.zone{min-height:140px;border:3px solid #8b83b6;background:#28254b;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:8px;box-shadow:4px 4px #0d0c1c;transition:.15s}.zone:hover{transform:translateY(-3px);border-color:var(--gold)}.zone .emoji{font-size:30px}.zone strong{font:8px/1.8 var(--pixel)}.zone small{font:18px var(--type);color:#b9b2dc}.zone.locked{opacity:.45;filter:grayscale(.8)}
+.choices{display:grid;gap:9px;margin-top:14px}.choice{border:2px solid #7770a4;background:#38335f;text-align:left;padding:11px;font:19px var(--type)}.choice:hover{border-color:var(--pink);background:#4a3b6c}
+.letter{background:#fff0cf;color:#493b4c;padding:21px;box-shadow:5px 5px #0d0c1c;font:22px/1.4 var(--type)}.letter h3{font:10px/1.8 var(--pixel);color:#9e557f}.letter p{margin:0 0 13px}.sign{font:26px var(--type);color:#a34f82}.footer{text-align:center;font:7px/2 var(--pixel);color:#928bb4;margin-top:20px}
+@media(max-width:520px){.scene{height:155px}.map{gap:9px}.zone{min-height:125px;padding:9px 5px}.zone strong{font-size:7px}.header{font-size:7px}}
+
+/* FINAL PHOTO GALLERY — image dimensions follow each picture's own proportions */
+.photo-gallery{margin:22px 0 8px}
+.gallery-heading{font:9px/1.8 var(--pixel);color:#9ce8c7;text-align:center;margin:0 0 7px}
+.gallery-note{font:19px/1.3 var(--type);color:#c9c2e5;text-align:center;margin:0 0 14px}
+.photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
+.photo-card{min-width:0;margin:0;background:#28254b;border:3px solid #8b83b6;padding:7px;box-shadow:4px 4px #0d0c1c;text-align:center}
+.photo-frame{width:100%;background:#201d40;border:2px dashed #7770a4;overflow:hidden;line-height:0}
+.photo-frame img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.photo-card figcaption{font:18px/1.2 var(--type);color:var(--gold);padding:8px 2px 5px;min-height:32px}
+@media(max-width:520px){.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.photo-card:last-child{grid-column:auto;width:auto}}
+
+</style></head>
+<body><div id="stars"></div><div class="scan"></div>
+<section class="screen" id="start"><div class="panel">
+<p class="logo">PLAYER 1<br>+<br>PLAYER 2</p><div class="sub">A LITTLE ADVENTURE, WE THE BEST DUO FR hehe</div>
+<div class="scene"><div class="moon"></div><div class="cloud"></div><div class="hill"></div><div class="ground"></div><div class="sprite a"></div><div class="sprite b"></div><div class="heart a">♥</div><div class="heart b">♥</div></div>
+<div class="tiny">PRESS START TO BEGIN A NEW CHAPTER</div><div class="menu"><button class="btn primary" id="startGame">▶ START GAME</button><button class="btn" id="howTo">HOW TO PLAY</button></div><div class="tiny">KALA MO SA TIKTOK KO GALING TO NO HAHAHAHAHAH,ILOVEYOU♡</div>
+</div></section>
+<section class="screen hidden" id="how"><div class="panel"><h2 class="title">HOW TO PLAY</h2><div class="dialog"><span class="speaker">MISSION</span><p>Explore the little world, visit each place, and collect memories and hearts along the way.</p></div><div class="dialog"><span class="speaker">CONTROLS</span><p>Tap the buttons to explore. No keyboard needed. Each location holds a small part of your story.</p></div><div class="dialog"><span class="speaker">YOUR GOAL</span><p>Visit the memory spots and unlock the final letter. Take your time, player two.</p></div><div class="menu"><button class="btn primary" id="backStart">GOT IT! BACK</button></div></div></section>
+<section class="screen hidden" id="world"><div class="header"><span>♡ OUR LITTLE WORLD</span><button id="homeBtn">TITLE SCREEN</button></div><div class="panel">
+<h2 class="title">CHOOSE YOUR DESTINATION</h2><div class="stats"><span id="heartCount">HEARTS: 0 / 4</span><span id="progress">PLACES: 0 / 4</span></div>
+<div class="dialog"><span class="speaker">SYSTEM MESSAGE</span><p>Welcome, player two. Every place holds a little memory. Where shall we go first?</p></div>
+<div class="map">
+<button class="zone" data-zone="meeting"><span class="emoji">🌱</span><strong>THE FIRST MEETING</strong><small>where it began</small></button>
+<button class="zone" data-zone="friendship"><span class="emoji">🎮</span><strong>THE FRIENDSHIP ARCADE</strong><small>side quests & laughter</small></button>
+<button class="zone" data-zone="together"><span class="emoji">🌙</span><strong>OUR LITTLE UNIVERSE</strong><small>different places, same sky</small></button>
+<button class="zone locked" data-zone="future"><span class="emoji">🔒</span><strong>THE NEXT CHAPTER</strong><small>unlock the final stage</small></button>
+</div><div class="footer">SAVE POINT · YOU CAN COME BACK ANYTIME</div></div></section>
+<section class="screen hidden" id="play"><div class="header"><span id="zoneLabel">MEMORY QUEST</span><button id="mapBtn">← WORLD MAP</button></div><div class="panel">
+<h2 class="title" id="questTitle">A MEMORY</h2><div class="scene" style="height:130px"><div class="moon"></div><div class="cloud"></div><div class="hill"></div><div class="ground"></div><div class="sprite a" style="left:38%"></div><div class="sprite b" style="left:56%"></div><div class="heart a">♥</div></div>
+<div class="dialog"><span class="speaker" id="speaker">PLAYER 1</span><p id="questText"></p></div><div id="choices" class="choices"></div><div id="feedback" class="dialog hidden"></div>
+</div></section>
+<section class="screen hidden" id="ending"><div class="panel">
+<p class="logo" style="font-size:17px">LEVEL CLEAR!</p><div style="text-align:center;color:var(--pink);font-size:25px;margin:10px">♥ ♥ ♥ ♥</div>
+<div class="letter"><h3>DEAR DANG, MY LOVE, MY SAFE PLACE, BABY, DEAR, DANGLINGGG, DEARLINGG, BABE, MOMMY, HONEY, HUN, SWEETIE AND MY SILLY,</h3>
+<p>Another month, another little chapter added to our story.</p>
+<p>When I think about us, I think about all the small things: the random conversations, the laughter, and the moments that made an ordinary day feel a little different. I never want to overlook those because every thing we do is treassured with all my heart.</p>
+<p>We may be in different places, but I'm grateful that we found a way to share a little world of our own. I don't need every day to be perfect. I just hope we keep choosing patience, kindness, and each other through all the chapters ahead.</p>
+<p>Thank you for being part of my days, baby girl. I'm glad our paths crossed even if it means only in a virtual screen, despite the circumstances we still managed to be together after everything we've been through, and I'm excited for all the memories we haven't made yet. Im looking forward to it babyy, let's be patient enough to be together, for God knows how long we wanted it to be.</p>
+<p>Happy monthsary, my love. Here's to another level, and lots of lots after it!!! Danglingg, All I could ever wish for is you, and I fear I'm running out of words to express the fullest extent of my deepest gratitude towards you, Mommy. I suppose I just have to do it through actions,efforts and time, Baby. That would be all Danglingg. HAPPY MONTHSARY BABYYYYYYY. 
+forever yours, and will be as I should be.</p><p class="sign">Player 1, always on your team. ♡</p></div>
+
+<div class="photo-gallery">
+  <h3 class="gallery-heading">✦ OUR LITTLE PHOTO ALBUM ✦</h3>
+  <p class="gallery-note">A few snapshots from our favorite little world.</p>
+  <div class="photo-grid">
+    <!-- PHOTO EDITING GUIDE:
+         Put your pictures in the same folder as this HTML file.
+         Change only the filenames in src="1.jpg", src="2.jpg", and src="3.jpg".
+         No fixed photo dimensions or aspect ratio are required:
+         each picture keeps its original proportions and scales to the available width.
+    -->
+    <figure class="photo-card">
+      <div class="photo-frame">
+        <img src="1.jpg" alt="Photo memory 1">
+      </div>
+      <figcaption>Baby, I don't only love you</figcaption>
+    </figure>
+    <figure class="photo-card">
+      <div class="photo-frame">
+        <img src="2.jpg" alt="Photo memory 2">
+      </div>
+      <figcaption>because we're in a perfect state of or when you're only</figcaption>
+    </figure>
+    <figure class="photo-card">
+      <div class="photo-frame">
+        <img src="3.jpg" alt="Photo memory 3">
+      </div>
+      <figcaption>Beautiful and presentable, if you're thinking that way then consider yourself wronggggg</figcaption>
+      </figure>
+      
+                                                  <figure class="photo-card">
+      <div class="photo-frame">
+        <img src="4.jpg" alt="Photo memory 4">
+        </div>
+    <figcaption>I love every
+    
+     about you, not just in times where we don't stru
+          i love your imperfect silly self, your flaws and every
+           that relates with you.</figcaption>
+  
+  </div>
+
+
+<div class="menu"><button class="btn primary" id="replay">↻ PLAY AGAIN</button><button class="btn" id="backWorld">BACK TO OUR WORLD</button></div><div class="footer">THANK YOU FOR PLAYING · ENDLESS MODE: ON (ouuuuuu shiiiiii) 
+please kissesssss</div>
+</div></section>
+<script>
+/* PERSONALIZE: edit these messages and the final letter to match your memories. */
+const data={
+meeting:{label:"ZONE 01 · THE BEGINNING",title:"THE FIRST MEETING",text:"Every good adventure starts somewhere. Ours began in a place neither of us expected, HAHAHAHAHAHAHA ROBLOX. What made that first connection special? OF COURSE US",choices:["A random little coincidence","A friendship that grew naturally","A moment that changed everything"],reply:"It started with something simple, so simple that none of us really expected such things to come between us, but somehow it became a story worth keeping. I'm glad that a little beginning led me to the most loveable and certainly the most beautiful of all, my dearest wife."},
+friendship:{label:"ZONE 02 · THE SIDE QUESTS",title:"THE FRIENDSHIP ARCADE",text:"Before all the monthsaries and love letters, there were conversations, jokes, and the comfort of being bestfriendss, not until I decided to cross that line and viola mag asawa na tayo ngayon a. What makes those memories special?",choices:["The silly conversations","The little things we learned about each other","How friendship slowly became something more"],reply:"Those little moments mattered. They built a connection that became one of my favorite parts of life. That's not even all, as I've said, I have been admiring you for a long time. I gave you a lot of signs and it took long enough for you to notice that, silly. I never knew that someone would be so dense like that T_T"},
+together:{label:"ZONE 03 · UNDER THE SAME SKY",title:"OUR LITTLE UNIVERSE",text:"Our map may show two different places, but somehow we still share a little world where we can be honest. It was never about the distance to begin with. What made the long distance meaningful?",choices:["Making time for each other","Being honest and patient","Making ordinary days special"],reply:"That's what I hope we keep doing: making the distance feel a little less big through the small ways we show up for each other. All we need for this relationship to thrive is for us to show up to the little things we do every single day. Everything matters, there's no such things as 'small things' all you do for me, baby, is appreciated deeply."},
+future:{label:"ZONE 04 · UNLOCKED",title:"THE NEXT CHAPTER",text:"You made it here, player two, or should I say Dearling? The next chapter isn't written yet, and I wanted it to be written with you. What should we fill it with?",choices:["More memories","More laughter","A little bit of everything, together"],reply:"Whatever the next chapter brings, I hope we meet it with kindness, patience, and excitement for all the little things ahead. My baby, it'd be such an honor to witness you grow up, mature and become the person who you want to be, so please do let me be with you— personally, I would love to stick around forever. "}
+};
+let visited=new Set(),hearts=0;
+const ids=["start","how","world","play","ending"];
+function show(id){ids.forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));window.scrollTo({top:0,behavior:"smooth"})}
+function update(){document.getElementById("heartCount").textContent="HEARTS: "+hearts+" / 4";document.getElementById("progress").textContent="PLACES: "+visited.size+" / 4";let f=document.querySelector('[data-zone="future"]');if(visited.size>=3){f.classList.remove("locked");f.querySelector(".emoji").textContent="🌸";f.querySelector("small").textContent="a new beginning awaits"}}
+function enter(key){if(key==="future"&&visited.size<3)return;let q=data[key];document.getElementById("zoneLabel").textContent=q.label;document.getElementById("questTitle").textContent=q.title;document.getElementById("questText").textContent=q.text;document.getElementById("speaker").textContent="PLAYER 1";let choices=document.getElementById("choices"),fb=document.getElementById("feedback");fb.classList.add("hidden");choices.innerHTML="";
+q.choices.forEach(c=>{let b=document.createElement("button");b.className="choice";b.textContent="▶ "+c;b.addEventListener("click",()=>{if(!visited.has(key)){visited.add(key);hearts=Math.min(4,hearts+1)}document.getElementById("speaker").textContent="A LITTLE NOTE FOR YOU";fb.innerHTML="<span class='speaker'>MEMORY UNLOCKED ♥</span><p>"+q.reply+"</p>";fb.classList.remove("hidden");choices.innerHTML="";let n=document.createElement("button");n.className="action";n.textContent=visited.size>=4?"CONTINUE →":"BACK TO WORLD MAP";n.onclick=()=>{update();show(visited.size>=4?"ending":"world")};choices.appendChild(n);update()});choices.appendChild(b)});show("play")}
+document.getElementById("startGame").onclick=()=>show("world");document.getElementById("howTo").onclick=()=>show("how");document.getElementById("backStart").onclick=()=>show("start");document.getElementById("homeBtn").onclick=()=>show("start");document.getElementById("mapBtn").onclick=()=>show("world");document.getElementById("backWorld").onclick=()=>show("world");document.getElementById("replay").onclick=()=>{visited.clear();hearts=0;update();show("start")};document.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>enter(b.dataset.zone));
+
+</script></body></html>
